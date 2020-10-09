@@ -1,222 +1,254 @@
 function code(){
-    const   calc        = stage.children[0],
-            onBtn       = calc.onBtn,
-            cBtn        = calc.cBtn,
-            acBtn       = calc.acBtn,
-            display     = calc.digitsTxt,
-            memoryDisp  = calc.memoryTxt,
-            operandDisp = calc.operandTxt,
-            // Memory buttons
-            mcBtn       = calc.mcBtn,
-            mrBtn       = calc.mrBtn,
-            mSubBtn     = calc.mSubBtn,
-            mAddBtn     = calc.mAddBtn,
-            //Operand Buttons
-            percentBtn  = calc.percentBtn,
-            rootBt      = calc.rootBtn,
-            divBtn      = calc.divBtn,
-            mulBtn      = calc.mulBtn,
-            subBtn      = calc.subBtn,
-            plusBtn     = calc.plusBtn,
-            plmiBtn     = calc.plmiBtn,
-            equalBtn    = calc.equalBtn,
-            // Number Buttons
-            pointBtn    = calc.pointBtn,
-            zeroBtn     = calc.zeroBtn,
-            oneBtn      = calc.oneBtn,
-            twoBtn      = calc.twoBtn,
-            threeBtn    = calc.threeBtn,
-            fourBtn     = calc.fourBtn,
-            fiveBtn     = calc.fiveBtn,
-            sixBtn      = calc.sixBtn,
-            sevenBtn    = calc.sevenBtn,
-            eightBtn    = calc.eightBtn,
-            nineBtn     = calc.nineBtn,
-            // Display Icons
-            divIcon     = calc.divIcon,
-            mulIcon     = calc.mulIcon,
-            subIcon     = calc.subIcon
-            addIcon     = calc.addIcon;
-    
-    var currentNumber = 0,
-        totalNumber = 0,
-        memoryNumber,
-        calcState = false,
-        checkDecimal = false,
-        operandState = "",
-        nextOperand = "";
+    class Calculator {
+        constructor(totalNumber, currentNumber){
+            this.total = totalNumber;
+            this.current = currentNumber;
+            this.powerOn();
+        }
 
-    function powerOn(){
-        currentNumber = 0;
-        totalNumber = 0;
-        updateDisplay();
-        resetOperators();
-        calcState = true;
-        nextOperand = "";
-        checkDecimal = false;
-    }
+        powerOn(){
+            this.current = "";
+            this.total = 0;
+            this.operation = undefined;
+            calcState = true;
+        }
 
-    function updateDisplay(){
-        display.text = currentNumber;
-    }
+        buildNumber(num){
+            if (num === "." && this.current.includes(".")) return;
+            if (this.prev !== ""){
+                this.updateDisplay();
+            }
+            this.current = this.current.toString() + num.toString();
+        }
 
-    function buildNumber(num){
-        console.log(num);
-        if (calcState === true && currentNumber.toString().length < 9){
-            if(currentNumber === 0){
-                if (num === "."){
-                    currentNumber = `${currentNumber}${num}`;
-                    console.log(currentNumber);
-                    checkDecimal = true;
-                    updateDisplay();
-                } else if (num >=0 && num <= 9) {
-                    currentNumber = num;
-                    console.log(currentNumber);
-                    updateDisplay();
-                }
+        pickOperation(operation){
+            if (this.current === "") return; 
+            if (this.total !== ""){
+                this.doMaths();
+            }
+            this.operation = operation;
+            this.operationDisplay();
+            this.total = this.current;
+            this.current = "";
+        }
 
-            } else {
-                if (num === "."){
-                    currentNumber = `${currentNumber}${num}`;
-                    checkDecimal = true;
-                    console.log(currentNumber);
-                    updateDisplay();
-                } else if (num >=0 && num <= 9) {
-                    currentNumber = `${currentNumber}${num}`;
-                    console.log(currentNumber);
-                    updateDisplay();
-                }
+        operationDisplay(){
+            divIcon.visible = false;
+            mulIcon.visible = false;
+            addIcon.visible = false;
+            subIcon.visible = false;
+            switch (this.operation) {
+                case "+":
+                    addIcon.visible = true;
+                    break;
+                case "-":
+                    subIcon.visible = true;
+                    break;
+                case "/":
+                    divIcon.visible = true;
+                    break;
+                case "*":
+                    mulIcon.visible = true;
+                    break;
+                default:
+                    return;
             }
         }
-    }
 
-    function intConversion(val1, val2){
-        currentNumber = Number(val1);
-        totalNumber = Number(val2);
-    }
+        doMaths(){
+            var result;
+            const prev = parseFloat(this.total);
+            const next = parseFloat(this.current);
+            if (isNaN(prev) || isNaN(next)) return;
+            switch (this.operation) {
+                case "+":
+                    result = prev + next;
+                    break;
+                case "-":
+                    result = prev - next;
+                    break;
+                case "/":
+                    result = prev / next;
+                    break;
+                case "*":
+                    result = prev * next;
+                    break;
+                default:
+                    return;
+            }
+            this.current = result;
+            display.text = this.current;
+            this.total = undefined;
+            this.operation = "";
+        }
 
-    function doMaths(op){
-        if (op === "add"){
-            return totalNumber + currentNumber;
-        } else if (op === "sub") {
-            return totalNumber - currentNumber;
-        } else if (op === "div") {
-            return totalNumber / currentNumber;
-        } else if (op === "mul") {
-            return totalNumber * currentNumber;
+        updateDisplay(){
+            display.text = this.current;
         }
     }
 
-    function displayCurrentOperator(op){
-        resetOperators();
-        op.visible = true;
-    }
 
-    function resetOperators(){
-        addIcon.visible = false;
-        subIcon.visible = false;
-        divIcon.visible = false;
-        mulIcon.visible = false;
-    }
+    const   calc = stage.children[0],
+            onBtn = calc.onBtn,
+            cBtn  = calc.cBtn,
+            acBtn = calc.acBtn,
+            display = calc.digitsTxt,
+            // Memory buttons
+            mcBtn = calc.mcBtn,
+            mrBtn = calc.mrBtn,
+            mSubBtn = calc.mSubBtn,
+            mAddBtn = calc.mAddBtn,
+            //Operand Buttons
+            percentBtn = calc.percentBtn,
+            rootBt = calc.rootBtn,
+            divBtn = calc.divBtn,
+            mulBtn = calc.mulBtn,
+            subBtn = calc.subBtn,
+            plusBtn = calc.plusBtn,
+            plmiBtn = calc.plmiBtn,
+            equalBtn = calc.equalBtn,
+            // Number Buttons
+            pointBtn = calc.pointBtn,
+            zeroBtn = calc.zeroBtn,
+            oneBtn = calc.oneBtn,
+            twoBtn = calc.twoBtn,
+            threeBtn = calc.threeBtn,
+            fourBtn = calc.fourBtn,
+            fiveBtn = calc.fiveBtn,
+            sixBtn = calc.sixBtn,
+            sevenBtn = calc.sevenBtn,
+            eightBtn = calc.eightBtn,
+            nineBtn = calc.nineBtn;
+            // Display Icons
+    const   divIcon = calc.divIcon, mulIcon = calc.mulIcon, subIcon = calc.subIcon, addIcon = calc.addIcon;
+    
+    var     currentNumber = 0,
+            totalNumber = 0,
+            memoryNumber,
+            calcState = false,
+            casio;
 
-    function setOperand(operand){
-        checkDecimal = false;
-        intConversion(currentNumber, totalNumber);
-        if (nextOperand === ""){
-            totalNumber = currentNumber;
-            nextOperand = operand
-            updateDisplay();
-            currentNumber = 0;
-        } else {
-            currentNumber = doMaths(nextOperand);
-            nextOperand = operand
-            updateDisplay();
-            totalNumber = currentNumber;
+    function sendToCalc(action){
+        switch (action) {
+            case "+":
+            case "-":
+            case "*":
+            case "/":
+                casio.pickOperation(action);
+                break;
+            case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9: case ".":
+                casio.buildNumber(action);
+                casio.updateDisplay();
+                break
+            default:
+                break;
         }
-    }
-
-    function invertValue(num){
-        currentNumber = 0 - num;
-        updateDisplay();
     }
 
     onBtn.addEventListener("click", function(){
-        powerOn();
+        casio = new Calculator(totalNumber, currentNumber);
+        display.text = "0";
     });
 
     plusBtn.addEventListener("click", function(){
-        displayCurrentOperator(addIcon);
-        setOperand("add");
+        if (calcState === true){
+            sendToCalc("+");
+        }
     })
 
     subBtn.addEventListener("click", function(){
-        displayCurrentOperator(subIcon);
-        setOperand("sub");
+        if (calcState === true){
+            sendToCalc("-");
+        }
     })
 
     divBtn.addEventListener("click", function(){
-        displayCurrentOperator(divIcon);
-        setOperand("div");
+        if (calcState === true){
+            sendToCalc("/");
+        }
     })
 
     mulBtn.addEventListener("click", function(){
-        displayCurrentOperator(mulIcon);
-        setOperand("mul");
+        if (calcState === true){
+            sendToCalc("*");
+        }
     })
 
     equalBtn.addEventListener("click", function(){
-        resetOperators();
-        setOperand("");
+        if (calcState === true){
+            casio.doMaths();
+            casio.operationDisplay();
+            casio.updateDisplay();
+        }
     })
 
     plmiBtn.addEventListener("click", function(){
-        invertValue(currentNumber);
+
     })
 
     zeroBtn.addEventListener("click", function(){
-        buildNumber(0);
+        if (calcState === true){
+            sendToCalc(0);
+        }
     });
 
     oneBtn.addEventListener("click", function(){
-        buildNumber(1);
+        if (calcState === true){
+            sendToCalc(1);
+        }
     });
 
     twoBtn.addEventListener("click", function(){
-        buildNumber(2);
+        if (calcState === true){
+            sendToCalc(2);
+        }
     });
 
     threeBtn.addEventListener("click", function(){
-        buildNumber(3);
+        if (calcState === true){
+            sendToCalc(3);
+        }
     });
 
     fourBtn.addEventListener("click", function(){
-        buildNumber(4);
+        if (calcState === true){
+            sendToCalc(4);
+        }
     });
 
     fiveBtn.addEventListener("click", function(){
-        buildNumber(5);
+        if (calcState === true){
+            sendToCalc(5);
+        }
     });
 
     sixBtn.addEventListener("click", function(){
-        buildNumber(6);
+        if (calcState === true){
+            sendToCalc(6);
+        }
     });
 
     sevenBtn.addEventListener("click", function(){
-        buildNumber(7);
+        if (calcState === true){
+            sendToCalc(7);
+        }
     });
 
     eightBtn.addEventListener("click", function(){
-        buildNumber(8);
+        if (calcState === true){
+            sendToCalc(8);
+        }
     });
 
     nineBtn.addEventListener("click", function(){
-        buildNumber(9);
+        if (calcState === true){
+            sendToCalc(9);
+        }
     });
 
     pointBtn.addEventListener("click", function(){
-        console.log("Decimal pressed")
-        if (checkDecimal === false){
-            buildNumber(".");
+        if (calcState === true){
+            sendToCalc(".");
         }
     });
 }
