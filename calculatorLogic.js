@@ -1,12 +1,19 @@
 function code(){
     class Calculator {
+        // Constructor for the calculator that initialises the variables in their default state
+        // This also then runs the power on sequence.
         constructor(totalNumber, currentNumber){
             this.total = totalNumber;
             this.current = currentNumber;
+            this.resetFlag = false;
             this.powerOn();
         }
 
         powerOn(){
+            // Sets the current value to blank and the total to zero in preparation for carrying
+            // out any math.  Setting the current operation to undefined to ensure that the first
+            // value entered into the calculator doesn't have a math operation carried out on it.
+            // calcState is set to true to enable the buttons to send information into the class.
             this.current = "";
             this.total = 0;
             this.operation = undefined;
@@ -14,6 +21,8 @@ function code(){
         }
 
         buildNumber(num){
+            // Checks if the number being sent in is a decimal point and checks to see if one has
+            // been entered already, breaks out of the function if this is the case.
             if (num === "." && this.current.includes(".")) return;
             if (this.prev !== ""){
                 this.updateDisplay();
@@ -82,6 +91,11 @@ function code(){
             this.operation = "";
         }
 
+        invertNumber(){
+            this.current = 0 - this.current;
+            display.text = this.current;
+        }
+
         updateDisplay(){
             display.text = this.current;
         }
@@ -129,6 +143,7 @@ function code(){
             casio;
 
     function sendToCalc(action){
+        console.log(casio.total, casio.current, casio.resetFlag)
         switch (action) {
             case "+":
             case "-":
@@ -140,8 +155,27 @@ function code(){
                 casio.buildNumber(action);
                 casio.updateDisplay();
                 break
+            case "=":
+                casio.doMaths();
+                casio.operationDisplay();
+                casio.updateDisplay();
+                // Used when equals has been pressed. Detects if the values held in the screen need
+                // to be cleared prior to pushing the next number button.
+                casio.resetFlag = true;
             default:
                 break;
+        }
+    }
+
+    function checkForReset(){
+        // Checks that the quals button has been pressed and that there is no operation selected by
+        // the user so that if they start typing something else into the calculator, that they
+        // start with a fresh calculation. Pressing an operation straight after equals will still
+        // allow the user to perform a calculation on the output of the previous calculation.
+        if (casio.resetFlag && casio.operation === ""){
+            casio.total = "";
+            casio.current = "";
+            casio.resetFlag = false;
         }
     }
 
@@ -176,78 +210,90 @@ function code(){
 
     equalBtn.addEventListener("click", function(){
         if (calcState === true){
-            casio.doMaths();
-            casio.operationDisplay();
-            casio.updateDisplay();
+            sendToCalc("=");
         }
     })
 
     plmiBtn.addEventListener("click", function(){
-
+        if (calcState === true){
+            casio.invertNumber();
+            casio.updateDisplay;
+        }
     })
 
     zeroBtn.addEventListener("click", function(){
         if (calcState === true){
+            checkForReset();
             sendToCalc(0);
         }
     });
 
     oneBtn.addEventListener("click", function(){
         if (calcState === true){
+            checkForReset();
             sendToCalc(1);
         }
     });
 
     twoBtn.addEventListener("click", function(){
         if (calcState === true){
+            checkForReset();
             sendToCalc(2);
         }
     });
 
     threeBtn.addEventListener("click", function(){
         if (calcState === true){
+            checkForReset();
             sendToCalc(3);
         }
     });
 
     fourBtn.addEventListener("click", function(){
         if (calcState === true){
+            checkForReset();
             sendToCalc(4);
         }
     });
 
     fiveBtn.addEventListener("click", function(){
         if (calcState === true){
+            checkForReset();
             sendToCalc(5);
         }
     });
 
     sixBtn.addEventListener("click", function(){
         if (calcState === true){
+            checkForReset();
             sendToCalc(6);
         }
     });
 
     sevenBtn.addEventListener("click", function(){
         if (calcState === true){
+            checkForReset();
             sendToCalc(7);
         }
     });
 
     eightBtn.addEventListener("click", function(){
         if (calcState === true){
+            checkForReset();
             sendToCalc(8);
         }
     });
 
     nineBtn.addEventListener("click", function(){
         if (calcState === true){
+            checkForReset();
             sendToCalc(9);
         }
     });
 
     pointBtn.addEventListener("click", function(){
         if (calcState === true){
+            checkForReset();
             sendToCalc(".");
         }
     });
