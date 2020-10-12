@@ -6,6 +6,7 @@ function code(){
             this.total = totalNumber;
             this.current = currentNumber;
             this.resetFlag = false;
+            this.operationLock = false;
             this.powerOn();
         }
 
@@ -18,6 +19,9 @@ function code(){
             this.total = 0;
             this.operation = undefined;
             calcState = true;
+            this.operationLock = false;
+            calc.repIcon.visible = false;
+            this.operationDisplay();
         }
 
         buildNumber(num){
@@ -31,10 +35,12 @@ function code(){
         }
 
         pickOperation(operation){
-            if (this.current === "") return; 
+
+            if (this.current === "") return;
             if (this.total !== ""){
                 this.doMaths();
             }
+
             this.operation = operation;
             this.operationDisplay();
             this.total = this.current;
@@ -64,6 +70,37 @@ function code(){
             }
         }
 
+        repeatOperation(){
+            console.log(this.total, this.current);
+            var result;
+            const prev = parseFloat(this.total);
+            const next = parseFloat(this.current);
+
+            switch (this.operation) {
+                case "+":
+                    //result = prev + next;
+                    result = next + prev;
+                    break;
+                case "-":
+                    //result = prev - next;
+                    result = next - prev;
+                    break;
+                case "/":
+                    //result = prev / next;
+                    result = next / prev;
+                    break;
+                case "*":
+                    //result = prev * next;
+                    result = next * prev;
+                    break;
+                default:
+                    return;
+            }
+
+            this.current = result;
+            display.text = this.current;
+        }
+
         doMaths(){
             var result;
             const prev = parseFloat(this.total);
@@ -85,6 +122,7 @@ function code(){
                 default:
                     return;
             }
+
             this.current = result;
             display.text = this.current;
             this.total = undefined;
@@ -134,7 +172,7 @@ function code(){
             eightBtn = calc.eightBtn,
             nineBtn = calc.nineBtn;
             // Display Icons
-    const   divIcon = calc.divIcon, mulIcon = calc.mulIcon, subIcon = calc.subIcon, addIcon = calc.addIcon;
+    const   divIcon = calc.divIcon, mulIcon = calc.mulIcon, subIcon = calc.subIcon, addIcon = calc.addIcon, repIcon = calc.repIcon;
     
     var     currentNumber = 0,
             totalNumber = 0,
@@ -143,28 +181,33 @@ function code(){
             casio;
 
     function sendToCalc(action){
-        console.log(casio.total, casio.current, casio.resetFlag)
-        switch (action) {
-            case "+":
-            case "-":
-            case "*":
-            case "/":
-                casio.pickOperation(action);
-                break;
-            case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9: case ".":
-                casio.buildNumber(action);
-                casio.updateDisplay();
-                break
-            case "=":
-                casio.doMaths();
-                casio.operationDisplay();
-                casio.updateDisplay();
-                // Used when equals has been pressed. Detects if the values held in the screen need
-                // to be cleared prior to pushing the next number button.
-                casio.resetFlag = true;
-            default:
-                break;
+        if (casio.operation === action){
+            casio.operationLock = true;
+            calc.repIcon.visible = true;
+        } else {
+            switch (action) {
+                case "+":
+                case "-":
+                case "*":
+                case "/":
+                    casio.pickOperation(action);
+                    break;
+                case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9: case ".":
+                    casio.buildNumber(action);
+                    casio.updateDisplay();
+                    break;
+                case "=":
+                    casio.doMaths();
+                    casio.operationDisplay();
+                    casio.updateDisplay();
+                    // Used when equals has been pressed. Detects if the values held in the screen need
+                    // to be cleared prior to pushing the next number button.
+                    casio.resetFlag = true;
+                default:
+                    break;
+            }
         }
+
     }
 
     function checkForReset(){
@@ -188,38 +231,43 @@ function code(){
         if (calcState === true){
             sendToCalc("+");
         }
-    })
+    });
 
     subBtn.addEventListener("click", function(){
         if (calcState === true){
             sendToCalc("-");
         }
-    })
+    });
 
     divBtn.addEventListener("click", function(){
         if (calcState === true){
             sendToCalc("/");
         }
-    })
+    });
 
     mulBtn.addEventListener("click", function(){
         if (calcState === true){
             sendToCalc("*");
         }
-    })
+    });
 
     equalBtn.addEventListener("click", function(){
         if (calcState === true){
-            sendToCalc("=");
+            if (casio.operationLock){
+                casio.repeatOperation();
+            } else {
+                sendToCalc("=");
+            }
+
         }
-    })
+    });
 
     plmiBtn.addEventListener("click", function(){
         if (calcState === true){
             casio.invertNumber();
             casio.updateDisplay;
         }
-    })
+    });
 
     zeroBtn.addEventListener("click", function(){
         if (calcState === true){
