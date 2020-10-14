@@ -5,6 +5,7 @@ function code(){
         constructor(totalNumber, currentNumber){
             this.total = totalNumber;
             this.current = currentNumber;
+            this.lastButtonPressed = "";
             this.resetFlag = false;
             this.operationLock = false;
             this.powerOn();
@@ -18,6 +19,7 @@ function code(){
             this.current = "";
             this.total = 0;
             this.operation = undefined;
+            this.lastButtonPressed = "";
             calcState = true;
             this.operationLock = false;
             calc.repIcon.visible = false;
@@ -27,16 +29,27 @@ function code(){
         buildNumber(num){
             // Checks if the number being sent in is a decimal point and checks to see if one has
             // been entered already, breaks out of the function if this is the case.
-            if (num === "." && this.current.includes(".")) return;
-            if (this.prev !== ""){
-                this.updateDisplay();
+            if (this.operationLock && this.lastButtonPressed === "="){
+                this.powerOn();
             }
+            if (num === "." && this.current.includes(".")) return;
+            // if (this.prev !== ""){
+            //     this.updateDisplay();
+            // }
             this.current = this.current.toString() + num.toString();
         }
 
-        pickOperation(operation){
+        setLastButton(button){
+            this.lastButtonPressed = button;
+        }
 
+        pickOperator(operation){
             if (this.current === "") return;
+            if (this.operationLock){
+                this.total = "";
+                this.operationLock = false;
+                calc.repIcon.visible = false;
+            }
             if (this.total !== ""){
                 this.doMaths();
             }
@@ -74,6 +87,9 @@ function code(){
             console.log(this.total, this.current);
             var result;
             const prev = parseFloat(this.total);
+            if (this.current === ""){
+                this.current = this.total;
+            }
             const next = parseFloat(this.current);
 
             switch (this.operation) {
@@ -98,7 +114,7 @@ function code(){
             }
 
             this.current = result;
-            display.text = this.current;
+            this.updateDisplay();
         }
 
         doMaths(){
@@ -124,14 +140,13 @@ function code(){
             }
 
             this.current = result;
-            display.text = this.current;
             this.total = undefined;
             this.operation = "";
         }
 
         invertNumber(){
             this.current = 0 - this.current;
-            display.text = this.current;
+            this.updateDisplay();
         }
 
         updateDisplay(){
@@ -180,34 +195,34 @@ function code(){
             calcState = false,
             casio;
 
-    function sendToCalc(action){
+    function numToCalc(action){
+        switch (action) {
+            case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9: case ".":
+                // casio.setLastButton(action);
+                casio.buildNumber(action);
+                casio.updateDisplay();
+                break;
+            case "=":
+                casio.setLastButton(action);
+                casio.doMaths();
+                casio.operationDisplay();
+                casio.updateDisplay();
+                // Used when equals has been pressed. Detects if the values held in the screen need
+                // to be cleared prior to pushing the next number button.
+                casio.resetFlag = true;
+            default:
+                break;
+        }
+    }
+
+    function operatorToCalc(action){
         if (casio.operation === action){
             casio.operationLock = true;
             calc.repIcon.visible = true;
         } else {
-            switch (action) {
-                case "+":
-                case "-":
-                case "*":
-                case "/":
-                    casio.pickOperation(action);
-                    break;
-                case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9: case ".":
-                    casio.buildNumber(action);
-                    casio.updateDisplay();
-                    break;
-                case "=":
-                    casio.doMaths();
-                    casio.operationDisplay();
-                    casio.updateDisplay();
-                    // Used when equals has been pressed. Detects if the values held in the screen need
-                    // to be cleared prior to pushing the next number button.
-                    casio.resetFlag = true;
-                default:
-                    break;
-            }
+            casio.setLastButton(action);
+            casio.pickOperator(action);
         }
-
     }
 
     function checkForReset(){
@@ -229,34 +244,35 @@ function code(){
 
     plusBtn.addEventListener("click", function(){
         if (calcState === true){
-            sendToCalc("+");
+            operatorToCalc("+");
         }
     });
 
     subBtn.addEventListener("click", function(){
         if (calcState === true){
-            sendToCalc("-");
+            operatorToCalc("-");
         }
     });
 
     divBtn.addEventListener("click", function(){
         if (calcState === true){
-            sendToCalc("/");
+            operatorToCalc("/");
         }
     });
 
     mulBtn.addEventListener("click", function(){
         if (calcState === true){
-            sendToCalc("*");
+            operatorToCalc("*");
         }
     });
 
     equalBtn.addEventListener("click", function(){
         if (calcState === true){
             if (casio.operationLock){
+                casio.setLastButton("=");
                 casio.repeatOperation();
             } else {
-                sendToCalc("=");
+                numToCalc("=");
             }
 
         }
@@ -272,77 +288,77 @@ function code(){
     zeroBtn.addEventListener("click", function(){
         if (calcState === true){
             checkForReset();
-            sendToCalc(0);
+            numToCalc(0);
         }
     });
 
     oneBtn.addEventListener("click", function(){
         if (calcState === true){
             checkForReset();
-            sendToCalc(1);
+            numToCalc(1);
         }
     });
 
     twoBtn.addEventListener("click", function(){
         if (calcState === true){
             checkForReset();
-            sendToCalc(2);
+            numToCalc(2);
         }
     });
 
     threeBtn.addEventListener("click", function(){
         if (calcState === true){
             checkForReset();
-            sendToCalc(3);
+            numToCalc(3);
         }
     });
 
     fourBtn.addEventListener("click", function(){
         if (calcState === true){
             checkForReset();
-            sendToCalc(4);
+            numToCalc(4);
         }
     });
 
     fiveBtn.addEventListener("click", function(){
         if (calcState === true){
             checkForReset();
-            sendToCalc(5);
+            numToCalc(5);
         }
     });
 
     sixBtn.addEventListener("click", function(){
         if (calcState === true){
             checkForReset();
-            sendToCalc(6);
+            numToCalc(6);
         }
     });
 
     sevenBtn.addEventListener("click", function(){
         if (calcState === true){
             checkForReset();
-            sendToCalc(7);
+            numToCalc(7);
         }
     });
 
     eightBtn.addEventListener("click", function(){
         if (calcState === true){
             checkForReset();
-            sendToCalc(8);
+            numToCalc(8);
         }
     });
 
     nineBtn.addEventListener("click", function(){
         if (calcState === true){
             checkForReset();
-            sendToCalc(9);
+            numToCalc(9);
         }
     });
 
     pointBtn.addEventListener("click", function(){
         if (calcState === true){
             checkForReset();
-            sendToCalc(".");
+            numToCalc(".");
         }
     });
 }
