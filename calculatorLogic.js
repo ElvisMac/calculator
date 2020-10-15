@@ -162,10 +162,10 @@ function code(){
         // positive number instead.
         invertNumber(){
             this.current = 0 - this.current;
-            this.updateDisplay();
+            display.text = this.current;
         }
 
-        // Refreshes the calculator display.
+        // Refreshes the calculator display
         updateDisplay(){
             display.text = this.current;
         }
@@ -295,7 +295,6 @@ function code(){
             } else {
                 numToCalc("=");
             }
-
         }
     });
 
