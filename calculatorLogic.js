@@ -33,9 +33,6 @@ function code(){
                 this.powerOn();
             }
             if (num === "." && this.current.includes(".")) return;
-            // if (this.prev !== ""){
-            //     this.updateDisplay();
-            // }
             this.current = this.current.toString() + num.toString();
         }
 
