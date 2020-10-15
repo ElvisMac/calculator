@@ -39,12 +39,18 @@ function code(){
             this.current = this.current.toString() + num.toString();
         }
 
+        // Used to help with resetting the calculator after doing any repeating operations
         setLastButton(button){
             this.lastButtonPressed = button;
         }
 
+        // Selects the operation to be carried out next, and if there is a value stored in the
+        // total variable, then it will perform the calculation before setting the calculator up 
+        // for the next value to be entered.
         pickOperator(operation){
+            // If nothing has been entered into the calculator yet this will just break from this function
             if (this.current === "") return;
+            // Resets the operation lock if a different operand is selected.
             if (this.operationLock){
                 this.total = "";
                 this.operationLock = false;
@@ -60,6 +66,8 @@ function code(){
             this.current = "";
         }
 
+        // Clears the display of operand icons then checks if one has been selected and sets it
+        // to be visible.
         operationDisplay(){
             divIcon.visible = false;
             mulIcon.visible = false;
@@ -83,10 +91,15 @@ function code(){
             }
         }
 
+        // Similar to the doMaths function, however this needs to work in a slightly different way
+        // due to the way the last value and next values need to interact (if a next value was provided)
         repeatOperation(){
             console.log(this.total, this.current);
             var result;
             const prev = parseFloat(this.total);
+            // This checks to see if the user entered another value to the calculator after locking
+            // in the operator. If they didn't then this will set the current value to that of the 
+            // total value before carrying out the operation.
             if (this.current === ""){
                 this.current = this.total;
             }
@@ -119,6 +132,8 @@ function code(){
 
         doMaths(){
             var result;
+            // The total and current values need to be parsed as floats prior to carrying out
+            // any maths otherwise the method will return NaN.
             const prev = parseFloat(this.total);
             const next = parseFloat(this.current);
             if (isNaN(prev) || isNaN(next)) return;
@@ -138,17 +153,22 @@ function code(){
                 default:
                     return;
             }
-
+            // Set the current value to the result and clear total of any value prior to continuing
+            // and then clear the operation in preparation for the next.
             this.current = result;
             this.total = undefined;
             this.operation = "";
         }
 
+        // Simply takes the current number on screen and subtracts it from zero.  If the number
+        // being subtracted is a negative, it will be subtracting a negative number to leave a 
+        // positive number instead.
         invertNumber(){
             this.current = 0 - this.current;
             this.updateDisplay();
         }
 
+        // Refreshes the calculator display.
         updateDisplay(){
             display.text = this.current;
         }
@@ -215,6 +235,10 @@ function code(){
         }
     }
 
+    // Buffer function that takes the selected operation and checks if it has been selected already
+    // before entering anything else.  If this is the case then the operation lock and the lock icon
+    // will be enabled and no maths operation will be carried out.  Otherwise it will pass the first
+    // selection of an operator to the pickOperator method in the casio class.
     function operatorToCalc(action){
         if (casio.operation === action){
             casio.operationLock = true;
