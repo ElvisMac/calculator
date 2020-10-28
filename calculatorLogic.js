@@ -16,24 +16,31 @@ function code(){
             // out any math.  Setting the current operation to undefined to ensure that the first
             // value entered into the calculator doesn't have a math operation carried out on it.
             // calcState is set to true to enable the buttons to send information into the class.
+            calcState = true;
+            display.text = "0";
             this.current = "";
             this.total = 0;
             this.operation = undefined;
             this.lastButtonPressed = "";
-            calcState = true;
             this.operationLock = false;
             calc.repIcon.visible = false;
+            calc.errIcon.visible = false;
             this.operationDisplay();
         }
 
         buildNumber(num){
             // Checks if the number being sent in is a decimal point and checks to see if one has
             // been entered already, breaks out of the function if this is the case.
-            if (this.operationLock && this.lastButtonPressed === "="){
-                this.powerOn();
-            }
-            if (num === "." && this.current.includes(".")) return;
+            if (this.current.includes(".") && num === ".") return;
+            // If the number length exceeds 8 characters (not counting the decimal point) then
+            // prevent further entry.
+            if (this.current.includes(".") && this.current.length >= 9) return;
+            // If the number length without a decimal point is 8 or more, then prevent further
+            // character entry.
+            if (this.current.length >= 8 && this.current.indexOf(".") === -1) return;
+            // This builds the display number and updates the screen to reflect current input.
             this.current = this.current.toString() + num.toString();
+            this.updateDisplay();
         }
 
         // Used to help with resetting the calculator after doing any repeating operations
@@ -41,12 +48,21 @@ function code(){
             this.lastButtonPressed = button;
         }
 
+        getLastButton(){
+            return this.lastButtonPressed;
+        }
+
         // Selects the operation to be carried out next, and if there is a value stored in the
         // total variable, then it will perform the calculation before setting the calculator up 
         // for the next value to be entered.
-        pickOperator(operation){
+        setOperator(operation){
             // If nothing has been entered into the calculator yet this will just break from this function
-            if (this.current === "") return;
+            if (this.current === ""){
+                this.operation = operation;
+                this.operationDisplay();
+                this.total = display.text;
+                return;
+            } 
             // Resets the operation lock if a different operand is selected.
             if (this.operationLock){
                 this.total = "";
@@ -59,8 +75,58 @@ function code(){
 
             this.operation = operation;
             this.operationDisplay();
-            this.total = this.current;
+            this.total = display.text;
             this.current = "";
+        }
+
+        doMaths(){
+            var result;
+            // The total and current values need to be parsed as floats prior to carrying out
+            // any maths otherwise the method will return NaN.
+            const prev = parseFloat(this.total);
+            const next = parseFloat(this.current);
+            console.log(prev, next);
+            if (isNaN(prev) || isNaN(next)) return;
+            switch (this.operation) {
+                case "+":
+                    result = prev + next;
+                    break;
+                case "-":
+                    result = prev - next;
+                    break;
+                case "/":
+                    result = prev / next;
+                    break;
+                case "*":
+                    result = prev * next;
+                    break;
+                default:
+                    return;
+            }
+            // Set the current value to the result and clear total of any value prior to continuing
+            // and then clear the operation in preparation for the next.
+            display.text = this.limitResult(result);
+            this.operation = undefined;
+        }
+
+        limitResult(num){
+            var spliceSize = undefined;
+            var stringNum = num.toString();
+            if (stringNum.includes(".") && stringNum.length > 9){
+                spliceSize = 9;
+            };
+            
+            if (stringNum.length > 8 && stringNum.indexOf(".") === -1){
+                spliceSize = 8;
+            };
+            
+            if (spliceSize !== undefined){
+                calc.errIcon.visible = true;
+                calcState = false;
+                return stringNum.slice(0, spliceSize);
+            } else {
+                return stringNum;
+            }
         }
 
         // Clears the display of operand icons then checks if one has been selected and sets it
@@ -91,7 +157,6 @@ function code(){
         // Similar to the doMaths function, however this needs to work in a slightly different way
         // due to the way the last value and next values need to interact (if a next value was provided)
         repeatOperation(){
-            console.log(this.total, this.current);
             var result;
             const prev = parseFloat(this.total);
             // This checks to see if the user entered another value to the calculator after locking
@@ -104,19 +169,15 @@ function code(){
 
             switch (this.operation) {
                 case "+":
-                    //result = prev + next;
                     result = next + prev;
                     break;
                 case "-":
-                    //result = prev - next;
                     result = next - prev;
                     break;
                 case "/":
-                    //result = prev / next;
                     result = next / prev;
                     break;
                 case "*":
-                    //result = prev * next;
                     result = next * prev;
                     break;
                 default:
@@ -127,45 +188,17 @@ function code(){
             this.updateDisplay();
         }
 
-        doMaths(){
-            var result;
-            // The total and current values need to be parsed as floats prior to carrying out
-            // any maths otherwise the method will return NaN.
-            const prev = parseFloat(this.total);
-            const next = parseFloat(this.current);
-            if (isNaN(prev) || isNaN(next)) return;
-            switch (this.operation) {
-                case "+":
-                    result = prev + next;
-                    break;
-                case "-":
-                    result = prev - next;
-                    break;
-                case "/":
-                    result = prev / next;
-                    break;
-                case "*":
-                    result = prev * next;
-                    break;
-                default:
-                    return;
-            }
-            // Set the current value to the result and clear total of any value prior to continuing
-            // and then clear the operation in preparation for the next.
-            this.current = result;
-            this.total = undefined;
-            this.operation = "";
-        }
+
 
         // Simply takes the current number on screen and subtracts it from zero.  If the number
         // being subtracted is a negative, it will be subtracting a negative number to leave a 
         // positive number instead.
         invertNumber(){
-            this.current = 0 - this.current;
-            display.text = this.current;
+            this.current = 0 - display.text;
+            this.updateDisplay();
         }
 
-        // Refreshes the calculator display
+        // Refreshes the calculator display.
         updateDisplay(){
             display.text = this.current;
         }
@@ -204,7 +237,7 @@ function code(){
             eightBtn = calc.eightBtn,
             nineBtn = calc.nineBtn;
             // Display Icons
-    const   divIcon = calc.divIcon, mulIcon = calc.mulIcon, subIcon = calc.subIcon, addIcon = calc.addIcon, repIcon = calc.repIcon;
+    const   divIcon = calc.divIcon, mulIcon = calc.mulIcon, subIcon = calc.subIcon, addIcon = calc.addIcon, repIcon = calc.repIcon, errIcon = calc.errIcon;
     
     var     currentNumber = 0,
             totalNumber = 0,
@@ -212,55 +245,29 @@ function code(){
             calcState = false,
             casio;
 
-    function numToCalc(action){
-        switch (action) {
-            case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9: case ".":
-                // casio.setLastButton(action);
-                casio.buildNumber(action);
-                casio.updateDisplay();
-                break;
-            case "=":
-                casio.setLastButton(action);
-                casio.doMaths();
-                casio.operationDisplay();
-                casio.updateDisplay();
-                // Used when equals has been pressed. Detects if the values held in the screen need
-                // to be cleared prior to pushing the next number button.
-                casio.resetFlag = true;
-            default:
-                break;
-        }
-    }
-
-    // Buffer function that takes the selected operation and checks if it has been selected already
-    // before entering anything else.  If this is the case then the operation lock and the lock icon
-    // will be enabled and no maths operation will be carried out.  Otherwise it will pass the first
-    // selection of an operator to the pickOperator method in the casio class.
-    function operatorToCalc(action){
-        if (casio.operation === action){
-            casio.operationLock = true;
-            calc.repIcon.visible = true;
-        } else {
-            casio.setLastButton(action);
-            casio.pickOperator(action);
-        }
-    }
-
     function checkForReset(){
         // Checks that the quals button has been pressed and that there is no operation selected by
         // the user so that if they start typing something else into the calculator, that they
         // start with a fresh calculation. Pressing an operation straight after equals will still
         // allow the user to perform a calculation on the output of the previous calculation.
-        if (casio.resetFlag && casio.operation === ""){
+        if (casio.resetFlag && casio.operation === undefined){
             casio.total = "";
             casio.current = "";
             casio.resetFlag = false;
         }
     }
 
+    function operatorToCalc(action){
+        if (casio.operation === action && action !== "=" && casio.current === ""){
+            casio.operationLock = true;
+            calc.repIcon.visible = true;
+        }
+        casio.setLastButton(action);
+        casio.setOperator(action);
+    }
+
     onBtn.addEventListener("click", function(){
         casio = new Calculator(totalNumber, currentNumber);
-        display.text = "0";
     });
 
     plusBtn.addEventListener("click", function(){
@@ -293,92 +300,93 @@ function code(){
                 casio.setLastButton("=");
                 casio.repeatOperation();
             } else {
-                numToCalc("=");
+                operatorToCalc("=");
             }
+
         }
     });
 
     plmiBtn.addEventListener("click", function(){
         if (calcState === true){
             casio.invertNumber();
-            casio.updateDisplay;
+            casio.updateDisplay();
         }
     });
 
     zeroBtn.addEventListener("click", function(){
         if (calcState === true){
             checkForReset();
-            numToCalc(0);
+            casio.buildNumber(0);
         }
     });
 
     oneBtn.addEventListener("click", function(){
         if (calcState === true){
             checkForReset();
-            numToCalc(1);
+            casio.buildNumber(1);
         }
     });
 
     twoBtn.addEventListener("click", function(){
         if (calcState === true){
             checkForReset();
-            numToCalc(2);
+            casio.buildNumber(2);
         }
     });
 
     threeBtn.addEventListener("click", function(){
         if (calcState === true){
             checkForReset();
-            numToCalc(3);
+            casio.buildNumber(3);
         }
     });
 
     fourBtn.addEventListener("click", function(){
         if (calcState === true){
             checkForReset();
-            numToCalc(4);
+            casio.buildNumber(4);
         }
     });
 
     fiveBtn.addEventListener("click", function(){
         if (calcState === true){
             checkForReset();
-            numToCalc(5);
+            casio.buildNumber(5);
         }
     });
 
     sixBtn.addEventListener("click", function(){
         if (calcState === true){
             checkForReset();
-            numToCalc(6);
+            casio.buildNumber(6);
         }
     });
 
     sevenBtn.addEventListener("click", function(){
         if (calcState === true){
             checkForReset();
-            numToCalc(7);
+            casio.buildNumber(7);
         }
     });
 
     eightBtn.addEventListener("click", function(){
         if (calcState === true){
             checkForReset();
-            numToCalc(8);
+            casio.buildNumber(8);
         }
     });
 
     nineBtn.addEventListener("click", function(){
         if (calcState === true){
             checkForReset();
-            numToCalc(9);
+            casio.buildNumber(9);
         }
     });
 
     pointBtn.addEventListener("click", function(){
         if (calcState === true){
             checkForReset();
-            numToCalc(".");
+            casio.buildNumber(".");
         }
     });
 }
