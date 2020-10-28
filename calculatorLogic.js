@@ -185,7 +185,8 @@ function code(){
             }
 
             this.current = result;
-            this.updateDisplay();
+            display.text = this.limitResult(result);
+            //this.updateDisplay();
         }
 
 
