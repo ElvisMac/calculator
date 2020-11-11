@@ -54,6 +54,11 @@ function code(){
             return this.lastButtonPressed;
         }
 
+        squareRoot(){
+            this.current = Math.sqrt(this.current);
+            this.updateDisplay();
+        }
+
         // Selects the operation to be carried out next, and if there is a value stored in the
         // total variable, then it will perform the calculation before setting the calculator up 
         // for the next value to be entered.
@@ -256,7 +261,7 @@ function code(){
             mAddBtn = calc.mAddBtn,
             //Operand Buttons
             percentBtn = calc.percentBtn,
-            rootBt = calc.rootBtn,
+            rootBtn = calc.rootBtn,
             divBtn = calc.divBtn,
             mulBtn = calc.mulBtn,
             subBtn = calc.subBtn,
@@ -307,6 +312,12 @@ function code(){
 
     onBtn.addEventListener("click", function(){
         casio = new Calculator(totalNumber, currentNumber);
+    });
+
+    rootBtn.addEventListener("click", function(){
+        if (calcState === true){
+            casio.squareRoot();
+        }
     });
 
     mcBtn.addEventListener("click", function(){
