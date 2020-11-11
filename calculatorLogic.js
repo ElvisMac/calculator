@@ -18,6 +18,8 @@ function code(){
             // calcState is set to true to enable the buttons to send information into the class.
             calcState = true;
             display.text = "0";
+            memoryNumber = 0;
+            calc.memIcon.visible = false;
             this.current = "";
             this.total = 0;
             this.operation = undefined;
@@ -31,10 +33,10 @@ function code(){
         buildNumber(num){
             // Checks if the number being sent in is a decimal point and checks to see if one has
             // been entered already, breaks out of the function if this is the case.
-            if (this.current.includes(".") && num === ".") return;
+            if (this.current.toString().includes(".") && num === ".") return;
             // If the number length exceeds 8 characters (not counting the decimal point) then
             // prevent further entry.
-            if (this.current.includes(".") && this.current.length >= 9) return;
+            if (this.current.toString().includes(".") && this.current.length >= 9) return;
             // If the number length without a decimal point is 8 or more, then prevent further
             // character entry.
             if (this.current.length >= 8 && this.current.indexOf(".") === -1) return;
@@ -106,6 +108,7 @@ function code(){
             // Set the current value to the result and clear total of any value prior to continuing
             // and then clear the operation in preparation for the next.
             display.text = this.limitResult(result);
+            
             this.operation = undefined;
         }
 
@@ -189,7 +192,42 @@ function code(){
             //this.updateDisplay();
         }
 
-
+        memoryOperation(action){
+            var result;
+            if (this.total !== ""){
+                this.doMaths();
+                result = parseFloat(display.text);
+                this.current = result;
+                this.updateDisplay();
+            } else {
+                result = parseFloat(display.text);
+            }
+            
+            switch (action){
+                case "mr":
+                    this.current = memoryNumber;
+                    break;
+                case "m-":
+                    memoryNumber -= result;
+                    break;
+                case "m+":
+                    memoryNumber += result;
+                    memIcon.visible = true;
+                    break;
+                case "mc":
+                    memIcon.visible = false;
+                    memoryNumber = 0;
+                    break;
+                default:
+                    return;
+            }
+            console.log(result);
+            this.operation = undefined;
+            this.operationDisplay();
+            this.total = display.text;
+            this.updateDisplay();
+            this.current = "";
+        }
 
         // Simply takes the current number on screen and subtracts it from zero.  If the number
         // being subtracted is a negative, it will be subtracting a negative number to leave a 
@@ -238,11 +276,11 @@ function code(){
             eightBtn = calc.eightBtn,
             nineBtn = calc.nineBtn;
             // Display Icons
-    const   divIcon = calc.divIcon, mulIcon = calc.mulIcon, subIcon = calc.subIcon, addIcon = calc.addIcon, repIcon = calc.repIcon, errIcon = calc.errIcon;
+    const   divIcon = calc.divIcon, mulIcon = calc.mulIcon, subIcon = calc.subIcon, addIcon = calc.addIcon, memIcon = calc.memIcon, repIcon = calc.repIcon, errIcon = calc.errIcon;
     
     var     currentNumber = 0,
             totalNumber = 0,
-            memoryNumber,
+            memoryNumber = 0,
             calcState = false,
             casio;
 
@@ -269,6 +307,30 @@ function code(){
 
     onBtn.addEventListener("click", function(){
         casio = new Calculator(totalNumber, currentNumber);
+    });
+
+    mcBtn.addEventListener("click", function(){
+        if (calcState === true){
+            casio.memoryOperation("mc");
+        }
+    });
+
+    mrBtn.addEventListener("click", function(){
+        if (calcState === true){
+            casio.memoryOperation("mr");
+        }
+    });
+
+    mAddBtn.addEventListener("click", function(){
+        if (calcState === true){
+            casio.memoryOperation("m+");
+        }
+    });
+
+    mSubBtn.addEventListener("click", function(){
+        if (calcState === true){
+            casio.memoryOperation("m-");
+        }
     });
 
     plusBtn.addEventListener("click", function(){
