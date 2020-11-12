@@ -128,13 +128,11 @@ function code(){
                 spliceSize = 8;
             };
             
-            if (spliceSize !== undefined){
+            if (spliceSize !== undefined && num > 99999999){
                 calc.errIcon.visible = true;
                 calcState = false;
-                return stringNum.slice(0, spliceSize);
-            } else {
-                return stringNum;
-            }
+            } 
+            return stringNum.slice(0, spliceSize);
         }
 
         // Clears the display of operand icons then checks if one has been selected and sets it
@@ -312,6 +310,15 @@ function code(){
 
     onBtn.addEventListener("click", function(){
         casio = new Calculator(totalNumber, currentNumber);
+    });
+
+    cBtn.addEventListener("click", function(){
+        calcState = true;
+        errIcon.visible = false;
+    });
+
+    acBtn.addEventListener("click", function(){
+        casio.powerOn();
     });
 
     rootBtn.addEventListener("click", function(){
