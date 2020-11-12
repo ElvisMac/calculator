@@ -55,8 +55,41 @@ function code(){
         }
 
         squareRoot(){
-            this.current = Math.sqrt(this.current);
+            this.current = this.limitResult(Math.sqrt(this.current));
             this.updateDisplay();
+            this.current = "";
+        }
+
+        percentage(){
+            var result;
+            // The total and current values need to be parsed as floats prior to carrying out
+            // any maths otherwise the method will return NaN.
+            const prev = parseFloat(this.total);
+            const next = parseFloat(this.current);
+            console.log(prev, next);
+            if (isNaN(prev) || isNaN(next)) return;
+            switch (this.operation) {
+                case "+":
+                    result = ((prev/100)*next) + prev;
+                    break;
+                case "-":
+                    result = ((prev - next) / next) * 100;
+                    break;
+                case "/":
+                    result = (prev / next) * 100;
+                    break;
+                case "*":
+                    result = (prev / 100) * next;
+                    break;
+                default:
+                    return;
+            }
+            // Set the current value to the result and clear total of any value prior to continuing
+            // and then clear the operation in preparation for the next.
+            display.text = this.limitResult(result);
+            this.operation = undefined;
+            this.current = "";
+            this.operationDisplay();
         }
 
         // Selects the operation to be carried out next, and if there is a value stored in the
@@ -324,6 +357,12 @@ function code(){
     rootBtn.addEventListener("click", function(){
         if (calcState === true){
             casio.squareRoot();
+        }
+    });
+
+    percentBtn.addEventListener("click", function(){
+        if (calcState === true){
+            casio.percentage();
         }
     });
 
