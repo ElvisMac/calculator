@@ -67,7 +67,10 @@ function code(){
             const prev = parseFloat(this.total);
             const next = parseFloat(this.current);
             console.log(prev, next);
-            if (isNaN(prev) || isNaN(next)) return;
+            if (isNaN(prev) || isNaN(next)) {
+                this.current = "";
+                return;
+            }
             switch (this.operation) {
                 case "+":
                     result = ((prev/100)*next) + prev;
