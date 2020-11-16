@@ -69,6 +69,7 @@ function code(){
             console.log(prev, next);
             if (isNaN(prev) || isNaN(next)) {
                 this.current = "";
+                this.updateDisplay();
                 return;
             }
             switch (this.operation) {
