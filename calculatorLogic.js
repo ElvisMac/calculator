@@ -351,7 +351,16 @@ function code(){
     });
 
     acBtn.addEventListener("click", function(){
-        casio.powerOn();
+        calcState = true;
+        display.text = "0";
+        casio.current = "";
+        casio.total = 0;
+        casio.operation = undefined;
+        casio.lastButtonPressed = "";
+        casio.operationLock = false;
+        calc.repIcon.visible = false;
+        calc.errIcon.visible = false;
+        casio.operationDisplay();
     });
 
     rootBtn.addEventListener("click", function(){
