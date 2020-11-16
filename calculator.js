@@ -1007,7 +1007,7 @@ if (reversed == null) { reversed = false; }
 	this.text.lineHeight = 21;
 	this.text.lineWidth = 12;
 	this.text.parent = this;
-	this.text.setTransform(21.4,2);
+	this.text.setTransform(21.4,6);
 
 	this.instance = new lib.CachedBmp_519();
 	this.instance.setTransform(0,0.8,0.5,0.5);
@@ -1019,7 +1019,7 @@ if (reversed == null) { reversed = false; }
 	this.text_1.lineHeight = 21;
 	this.text_1.lineWidth = 12;
 	this.text_1.parent = this;
-	this.text_1.setTransform(21.4,2);
+	this.text_1.setTransform(21.4,6);
 
 	this.instance_2 = new lib.CachedBmp_520();
 	this.instance_2.setTransform(0,0.8,0.5,0.5);
@@ -1194,7 +1194,7 @@ if (reversed == null) { reversed = false; }
 	this.text = new cjs.Text("%", "normal 400 19px 'Orbitron'", "#F2F2F2");
 	this.text.lineHeight = 24;
 	this.text.parent = this;
-	this.text.setTransform(18.4,2);
+	this.text.setTransform(18.4,4);
 	if(!lib.properties.webfonts['Orbitron']) {
 		lib.webFontTxtInst['Orbitron'] = lib.webFontTxtInst['Orbitron'] || [];
 		lib.webFontTxtInst['Orbitron'].push(this.text);
@@ -1286,7 +1286,7 @@ if (reversed == null) { reversed = false; }
 	this.text.lineHeight = 24;
 	this.text.lineWidth = 32;
 	this.text.parent = this;
-	this.text.setTransform(11.4,2);
+	this.text.setTransform(11.4,5);
 	if(!lib.properties.webfonts['Orbitron']) {
 		lib.webFontTxtInst['Orbitron'] = lib.webFontTxtInst['Orbitron'] || [];
 		lib.webFontTxtInst['Orbitron'].push(this.text);
@@ -1302,7 +1302,7 @@ if (reversed == null) { reversed = false; }
 	this.text_1.lineHeight = 24;
 	this.text_1.lineWidth = 32;
 	this.text_1.parent = this;
-	this.text_1.setTransform(11.4,2);
+	this.text_1.setTransform(11.4,5);
 	if(!lib.properties.webfonts['Orbitron']) {
 		lib.webFontTxtInst['Orbitron'] = lib.webFontTxtInst['Orbitron'] || [];
 		lib.webFontTxtInst['Orbitron'].push(this.text_1);
