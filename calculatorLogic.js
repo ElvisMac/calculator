@@ -299,6 +299,7 @@ function code(){
             if (action !== "mr"){
                 memoryNumber = memTemp;
             }
+            if (action === "mr") return;
             this.operation = undefined;
             this.operationDisplay();
             this.total = display.text;
