@@ -40,6 +40,13 @@ function code(){
             // If the number length without a decimal point is 8 or more, then prevent further
             // character entry.
             if (this.current.length >= 8 && this.current.indexOf(".") === -1) return;
+            if ((mulIcon.visible || subIcon.visible || addIcon.visible || divIcon.visible) && num === 0){
+                display.text = "0"
+            }
+            if (this.current.length === 0 && num === 0) return;
+
+
+            
             console.log(this.percentReset);
             if (this.percentReset){
                 this.current = "";
@@ -179,7 +186,7 @@ function code(){
             };
             
             if (spliceSize !== undefined && num > 99999999){
-                calc.errIcon.visible = true;
+                errIcon.visible = true;
                 calcState = false;
             } 
             return stringNum.slice(0, spliceSize);
