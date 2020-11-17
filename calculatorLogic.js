@@ -90,9 +90,11 @@ function code(){
             switch (this.operation) {
                 case "+":
                     result = ((prev/100)*next) + prev;
+                    alert("RANDOM NUMBERS, GO!!");
                     break;
                 case "-":
                     result = ((prev - next) / next) * 100;
+                    alert("RANDOM NUMBERS, GO!!");
                     break;
                 case "/":
                     result = (prev / next) * 100;
