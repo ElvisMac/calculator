@@ -167,7 +167,12 @@ function code(){
             }
             // Set the current value to the result and clear total of any value prior to continuing
             // and then clear the operation in preparation for the next.
-            display.text = this.limitResult(result) + ".";
+            if (this.limitResult(result).toString().indexOf(".") === -1){
+                display.text = this.limitResult(result) + ".";
+            } else {
+                display.text = this.limitResult(result);
+            }
+            
             this.operation = undefined;
         }
 
@@ -390,6 +395,7 @@ function code(){
         if (casio.acPressed = true){
             casio.current = "";
             display.text = "0.";
+            casio.acPressed = false;
         }
         if ((memoryNumber !== undefined || memoryNumber !== 0) && memIcon.visible){
             calcState = true;
