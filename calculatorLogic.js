@@ -290,7 +290,9 @@ function code(){
                 calcState = false;
                 return;
             }
-            memoryNumber = memTemp;
+            if (action !== "mr"){
+                memoryNumber = memTemp;
+            }
             this.operation = undefined;
             this.operationDisplay();
             this.total = display.text;
@@ -308,6 +310,8 @@ function code(){
 
         // Refreshes the calculator display.
         updateDisplay(){
+            console.log("Current contents:");
+            console.log(this.current);
             if (this.current.toString().indexOf(".") === -1){
                 display.text = this.current + ".";
             } else {
