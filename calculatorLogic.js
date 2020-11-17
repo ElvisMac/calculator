@@ -69,7 +69,15 @@ function code(){
         }
 
         squareRoot(){
-            this.current = this.limitResult(Math.sqrt(this.current));
+            var tempNo = parseFloat(this.current)
+            console.log(`TempNo: ${tempNo}`)
+            if (tempNo < 0){
+                tempNo = 0 - tempNo;
+                console.log(`Number: ${this.current}`);
+                errIcon.visible = true;
+                calcState = false;
+            }
+            this.current = this.limitResult(Math.sqrt(tempNo));
             this.updateDisplay();
         }
 
@@ -286,7 +294,7 @@ function code(){
                 case "mc":
                     memIcon.visible = false;
                     memoryNumber = 0;
-                    break;
+                    return;
                 default:
                     return;
             }
@@ -316,7 +324,7 @@ function code(){
         // being subtracted is a negative, it will be subtracting a negative number to leave a 
         // positive number instead.
         invertNumber(){
-            this.current = 0 - display.text;
+            this.current = 0 - parseFloat(display.text);
             this.updateDisplay();
         }
 
@@ -501,6 +509,7 @@ function code(){
 
     plmiBtn.addEventListener("click", function(){
         if (calcState === true){
+            if (display.text === "0.") return;
             casio.invertNumber();
             casio.updateDisplay();
         }
