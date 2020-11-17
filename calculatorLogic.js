@@ -286,7 +286,7 @@ function code(){
             }
             if (memTemp > 99999999){
                 errIcon.visible = true;
-                display.text = "0";
+                display.text = "0.";
                 calcState = false;
                 return;
             }
