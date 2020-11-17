@@ -158,11 +158,16 @@ function code(){
             // Set the current value to the result and clear total of any value prior to continuing
             // and then clear the operation in preparation for the next.
             display.text = this.limitResult(result);
-            
+            console.log(result);
             this.operation = undefined;
         }
 
         limitResult(num){
+            if(num === Infinity || isNaN(num)){
+                calc.errIcon.visible = true;
+                calcState = false;
+                return 0;
+            }
             var spliceSize = undefined;
             var stringNum = num.toString();
             if (stringNum.includes(".") && stringNum.length > 9){
