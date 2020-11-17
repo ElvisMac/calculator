@@ -73,7 +73,6 @@ function code(){
             console.log(`TempNo: ${tempNo}`)
             if (tempNo < 0){
                 tempNo = 0 - tempNo;
-                console.log(`Number: ${this.current}`);
                 errIcon.visible = true;
                 calcState = false;
             }
