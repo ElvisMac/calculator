@@ -310,8 +310,6 @@ function code(){
 
         // Refreshes the calculator display.
         updateDisplay(){
-            console.log("Current contents:");
-            console.log(this.current);
             if (this.current.toString().indexOf(".") === -1){
                 display.text = this.current + ".";
             } else {
@@ -388,13 +386,19 @@ function code(){
     });
 
     cBtn.addEventListener("click", function(){
-        calcState = true;
-        errIcon.visible = false;
+        if ((memoryNumber !== undefined || memoryNumber !== 0) && memIcon.visible){
+            calcState = true;
+            errIcon.visible = false;
+        } else {
+            casio.current = "";
+            display.text = "0.";
+        }
+
     });
 
     acBtn.addEventListener("click", function(){
         calcState = true;
-        display.text = "0";
+        display.text = "0.";
         casio.current = "";
         casio.total = 0;
         casio.operation = undefined;
