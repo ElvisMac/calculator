@@ -254,6 +254,7 @@ function code(){
 
         memoryOperation(action){
             var result;
+            var memTemp;
             if (this.total !== ""){
                 this.doMaths();
                 result = parseFloat(display.text);
@@ -264,14 +265,15 @@ function code(){
             }
             
             switch (action){
+                
                 case "mr":
                     this.current = memoryNumber;
                     break;
                 case "m-":
-                    memoryNumber -= result;
+                    memTemp = memoryNumber - result;
                     break;
                 case "m+":
-                    memoryNumber += result;
+                    memTemp = memoryNumber + result;
                     memIcon.visible = true;
                     break;
                 case "mc":
@@ -281,7 +283,13 @@ function code(){
                 default:
                     return;
             }
-            console.log(result);
+            if (memTemp > 99999999){
+                errIcon.visible = true;
+                display.text = "0";
+                calcState = false;
+                return;
+            }
+            memoryNumber = memTemp;
             this.operation = undefined;
             this.operationDisplay();
             this.total = display.text;
