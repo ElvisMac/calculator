@@ -298,8 +298,13 @@ function code(){
             }
             if (action !== "mr"){
                 memoryNumber = memTemp;
+                console.log(`addingMem ${memoryNumber}`);
             }
-            if (action === "mr") return;
+            if (action === "mr"){
+                this.current = memoryNumber;
+                this.updateDisplay();
+                return;
+            };
             this.operation = undefined;
             this.operationDisplay();
             this.total = display.text;
