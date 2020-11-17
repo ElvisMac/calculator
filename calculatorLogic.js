@@ -308,7 +308,7 @@ function code(){
 
         // Refreshes the calculator display.
         updateDisplay(){
-            if (this.current.indexOf(".") === -1){
+            if (this.current.toString().indexOf(".") === -1){
                 display.text = this.current + ".";
             } else {
                 display.text = this.current;
