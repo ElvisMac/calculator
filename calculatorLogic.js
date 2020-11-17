@@ -20,6 +20,7 @@ function code(){
             display.text = "0.";
             memoryNumber = 0;
             calc.memIcon.visible = false;
+            this.acPressed = false;
             this.current = "";
             this.total = 0;
             this.operation = undefined;
@@ -386,6 +387,10 @@ function code(){
     });
 
     cBtn.addEventListener("click", function(){
+        if (casio.acPressed = true){
+            casio.current = "";
+            display.text = "0.";
+        }
         if ((memoryNumber !== undefined || memoryNumber !== 0) && memIcon.visible){
             calcState = true;
             errIcon.visible = false;
@@ -401,6 +406,7 @@ function code(){
         display.text = "0.";
         casio.current = "";
         casio.total = 0;
+        casio.acPressed = true;
         casio.operation = undefined;
         casio.lastButtonPressed = "";
         casio.operationLock = false;
