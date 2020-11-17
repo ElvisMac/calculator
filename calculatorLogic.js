@@ -40,6 +40,12 @@ function code(){
             // If the number length without a decimal point is 8 or more, then prevent further
             // character entry.
             if (this.current.length >= 8 && this.current.indexOf(".") === -1) return;
+            console.log(this.percentReset);
+            if (this.percentReset){
+                this.current = "";
+                this.updateDisplay();
+                this.percentReset = false;
+            }
             // This builds the display number and updates the screen to reflect current input.
             this.current = this.current.toString() + num.toString();
             this.updateDisplay();
@@ -57,7 +63,6 @@ function code(){
         squareRoot(){
             this.current = this.limitResult(Math.sqrt(this.current));
             this.updateDisplay();
-            this.current = "";
         }
 
         percentage(){
@@ -67,11 +72,14 @@ function code(){
             const prev = parseFloat(this.total);
             const next = parseFloat(this.current);
             console.log(prev, next);
-            if (isNaN(prev) || isNaN(next)) {
-                this.current = "";
-                this.updateDisplay();
+            if (this.total === "" || this.total === undefined || this.total === 0){
+                this.percentReset = true;
                 return;
             }
+            if (isNaN(prev) || isNaN(next)){
+                return;
+            };
+            
             switch (this.operation) {
                 case "+":
                     result = ((prev/100)*next) + prev;
