@@ -17,7 +17,7 @@ function code(){
             // value entered into the calculator doesn't have a math operation carried out on it.
             // calcState is set to true to enable the buttons to send information into the class.
             calcState = true;
-            display.text = "0";
+            display.text = "0.";
             memoryNumber = 0;
             calc.memIcon.visible = false;
             this.current = "";
@@ -164,8 +164,7 @@ function code(){
             }
             // Set the current value to the result and clear total of any value prior to continuing
             // and then clear the operation in preparation for the next.
-            display.text = this.limitResult(result);
-            console.log(result);
+            display.text = this.limitResult(result) + ".";
             this.operation = undefined;
         }
 
@@ -307,7 +306,12 @@ function code(){
 
         // Refreshes the calculator display.
         updateDisplay(){
-            display.text = this.current;
+            if (this.current.indexOf(".") === -1){
+                display.text = this.current + ".";
+            } else {
+                display.text = this.current;
+            }
+            
         }
     }
 
