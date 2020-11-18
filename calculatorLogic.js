@@ -46,9 +46,6 @@ function code(){
             }
             if (this.current.length === 0 && num === 0) return;
 
-
-            
-            console.log(this.percentReset);
             if (this.percentReset){
                 this.current = "";
                 this.updateDisplay();
@@ -69,7 +66,7 @@ function code(){
         }
 
         squareRoot(){
-            var tempNo = parseFloat(this.current)
+            var tempNo = parseFloat(display.text)
             console.log(`TempNo: ${tempNo}`)
             if (tempNo < 0){
                 tempNo = 0 - tempNo;
@@ -78,6 +75,7 @@ function code(){
             }
             this.current = this.limitResult(Math.sqrt(tempNo));
             this.updateDisplay();
+            this.current = "";
         }
 
         percentage(){
@@ -586,8 +584,14 @@ function code(){
 
     pointBtn.addEventListener("click", function(){
         if (calcState === true){
+            console.log(display.text);
             checkForReset();
-            casio.buildNumber(".");
+            if (display.text === "0." || casio.operation !== undefined){
+                casio.buildNumber("0.");
+            } else {
+                casio.buildNumber(".");
+            }
+
         }
     });
 }
