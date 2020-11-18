@@ -34,7 +34,7 @@ function code(){
         buildNumber(num){
             // Checks if the number being sent in is a decimal point and checks to see if one has
             // been entered already, breaks out of the function if this is the case.
-            if (this.current.toString().includes(".") && num === ".") return;
+            if (this.current.toString().includes(".") && (num === "." || num === "0.")) return;
             // If the number length exceeds 8 characters (not counting the decimal point) then
             // prevent further entry.
             if (this.current.toString().includes(".") && this.current.length >= 9) return;
@@ -587,12 +587,9 @@ function code(){
         if (calcState === true){
             console.log(display.text);
             checkForReset();
-            if (display.text === "0." || casio.operation !== undefined){
-                if (casio.operationLock === false){
-                    casio.buildNumber("0.");
-                } else {
-                    casio.buildNumber("0.");
-                }
+            console.log()
+            if (casio.current === ""){
+                casio.buildNumber("0.");
             } else {
                 casio.buildNumber(".");
             }
