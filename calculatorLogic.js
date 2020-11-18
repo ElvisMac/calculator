@@ -404,6 +404,11 @@ function code(){
     });
 
     cBtn.addEventListener("click", function(){
+        if (calcState === false && errIcon.visible){
+            errIcon.visible = false;
+            calcState = true;
+            return;
+        }
         if (casio.acPressed = true){
             casio.current = "";
             display.text = "0.";
@@ -416,7 +421,6 @@ function code(){
             casio.current = "";
             display.text = "0.";
         }
-
     });
 
     acBtn.addEventListener("click", function(){
