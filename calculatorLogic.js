@@ -588,7 +588,11 @@ function code(){
             console.log(display.text);
             checkForReset();
             if (display.text === "0." || casio.operation !== undefined){
-                casio.buildNumber("0.");
+                if (casio.operationLock === false){
+                    casio.buildNumber("0.");
+                } else {
+                    casio.buildNumber("0.");
+                }
             } else {
                 casio.buildNumber(".");
             }
