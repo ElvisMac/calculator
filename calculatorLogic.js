@@ -265,7 +265,6 @@ function code(){
         }
 
         memoryOperation(action){
-            if (memoryNumber === 0) return;
             var result;
             var memTemp;
             if (this.total !== ""){
